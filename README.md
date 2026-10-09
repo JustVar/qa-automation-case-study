@@ -1,7 +1,7 @@
 # QA Automation Case Study: Soterix Systems
 
-I managed QA at Soterix Systems, a startup selling AI video analytics as a
-service: cameras on customer sites, edge boxes with NVIDIA GPUs running the
+I was System Platform QA/QC Manager at Soterix Systems, a startup selling AI
+video analytics as a service: cameras on customer sites, edge boxes with NVIDIA GPUs running the
 analytics, and a cloud web app called NexaiQ-Core. I managed the QA team, the
 test automation program and the API testing effort. Between July 2025 and
 September 2026 I built the test automation, from a first Playwright script to
@@ -44,17 +44,16 @@ flowchart TB
     S --> L["Run ledger<br/>in git"]
     S --> R["Run record<br/>every run"]
     P --> K["Slack post<br/>per run"]
-    P -.-> E["Email report<br/>built, not switched on"]
+    P --> E["Email report<br/>Microsoft 365"]
 ```
 
 Both suites install the shared package as a wheel kept inside each repo, so a
 new teammate needs read access to one repo and nothing else. The package hands
 each finished run to a list of destinations ("sinks"). Adding a destination,
 such as a JUnit file, means adding a class, not changing the reporter. The
-nightly and the Windows runner ran on a schedule from September 2026. Each run
-posted to Slack. An email report, sent through Microsoft 365 to a distribution
-list, was built and could be sent by hand, but was not switched on for the
-scheduled runs (the dotted line).
+nightly and the Windows runner ran on a schedule from September 2026, and
+each run posted to Slack. The package also emails a run's report to a
+distribution list through Microsoft 365.
 
 ## What I would point a QA manager at
 
@@ -168,7 +167,6 @@ What did not:
 - Results reached QA Touch only from runs started by hand. The scheduled
   nightly never uploaded.
 - Automatic Jira bug filing was built, and never switched on.
-- The email report was built, and never switched on for the scheduled runs.
 - The suite is mostly end-to-end. Backend behaviour such as user directory
   sync, multi-factor sign-in and webhooks belonged in the API suite, and that
   shift had only started.
@@ -203,3 +201,7 @@ To make the repos readable from outside, in October 2026:
 CI is switched off here. It ran on the company's copies of these repos, and
 there is no server left to test against. The offline suites still run on any
 machine, and each repo's README says how.
+
+## Contact
+
+Justin Varughese, [LinkedIn](https://www.linkedin.com/in/justin-var/)
