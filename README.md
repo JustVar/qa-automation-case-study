@@ -34,17 +34,46 @@ few fixes listed at the bottom of this page.
 
 ```mermaid
 flowchart TB
-    N["Nightly<br/>Linux lab server"] --> W
-    X["Windows runner<br/>H.265 video"] --> W
-    W["Soterix-WebApp-QA<br/>Playwright + pytest"] --> S
-    A["Soterix-API-QA<br/>requests + pytest"] --> S
-    S["SOTERIX-QA-SHARED<br/>pytest plugins"]
-    S --> P["Run archive<br/>run and health pages"]
-    S --> Q["QA Touch upload<br/>read back"]
-    S --> L["Run ledger<br/>in git"]
-    S --> R["Run record<br/>every run"]
-    P --> K["Slack post<br/>per run"]
-    P --> E["Email report<br/>Microsoft 365"]
+    subgraph sched["Scheduled runs"]
+        N(["Nightly<br/>Linux lab server"])
+        X(["Windows runner<br/>H.265 video"])
+    end
+    subgraph suites["Test suites"]
+        W["Soterix-WebApp-QA<br/>Playwright + pytest<br/>402 browser tests"]
+        A["Soterix-API-QA<br/>requests + pytest<br/>API tests"]
+    end
+    S{{"SOTERIX-QA-SHARED<br/>shared pytest pipeline"}}
+    subgraph out["Outputs"]
+        P["Run archive<br/>run and health pages"]
+        Q["QA Touch<br/>results read back"]
+        L[("Run ledger<br/>in git")]
+        R[("Run record<br/>every run")]
+    end
+    subgraph notify["Notifications"]
+        K["Slack post"]
+        E["Email report<br/>Microsoft 365"]
+    end
+    N --> W
+    X --> W
+    W --> S
+    A --> S
+    S --> P
+    S --> Q
+    S --> L
+    S --> R
+    P --> K
+    P --> E
+
+    classDef schedule fill:#57606a,stroke:#424a53,color:#ffffff
+    classDef suite fill:#0969da,stroke:#0550ae,color:#ffffff
+    classDef core fill:#8250df,stroke:#6639ba,color:#ffffff
+    classDef output fill:#1a7f37,stroke:#116329,color:#ffffff
+    classDef alert fill:#bc4c00,stroke:#953800,color:#ffffff
+    class N,X schedule
+    class W,A suite
+    class S core
+    class P,Q,L,R output
+    class K,E alert
 ```
 
 Both suites install the shared package as a wheel kept inside each repo, so a
