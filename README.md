@@ -1,13 +1,14 @@
 # QA Automation Case Study: Soterix Systems
 
-I was QA Lead at Soterix Systems, a startup selling AI video analytics as a
+I managed QA at Soterix Systems, a startup selling AI video analytics as a
 service: cameras on customer sites, edge boxes with NVIDIA GPUs running the
-analytics, and a cloud web app called NexaiQ-Core. Between July 2025 and
-September 2026 I built its test automation, from a first Playwright script to
-three connected repos: a browser test suite, an API test suite, and a shared pytest pipeline
-that records every run, explains its failures and reports the results to the
-team's test management tool. I wrote it with AI coding agents, under rules and
-checks I set up so that their output had to prove itself.
+analytics, and a cloud web app called NexaiQ-Core. I managed the QA team, the
+test automation program and the API testing effort. Between July 2025 and
+September 2026 I built the test automation, from a first Playwright script to
+three connected repos: a browser test suite, an API test suite, and a shared
+pytest pipeline that records every run, explains its failures and reports the
+results to the team's test management tool. I wrote it with AI coding agents,
+under rules and checks I set up so that their output had to prove itself.
 
 Soterix has since closed. The repos are kept as they were at the end, with the
 few fixes listed at the bottom of this page.
@@ -32,31 +33,28 @@ few fixes listed at the bottom of this page.
 ## How the pieces fit
 
 ```mermaid
-flowchart LR
-    subgraph suites["Test suites"]
-        W["Soterix-WebApp-QA<br/>Playwright + pytest"]
-        A["Soterix-API-QA<br/>requests + pytest"]
-    end
-    S["SOTERIX-QA-SHARED<br/>pytest plugins, installed as a wheel"]
-    W --> S
-    A --> S
+flowchart TB
+    N["Nightly<br/>Linux lab server"] --> W
+    X["Windows runner<br/>H.265 video"] --> W
+    W["Soterix-WebApp-QA<br/>Playwright + pytest"] --> S
+    A["Soterix-API-QA<br/>requests + pytest"] --> S
+    S["SOTERIX-QA-SHARED<br/>pytest plugins"]
+    S --> P["Run archive<br/>run and health pages"]
+    S --> Q["QA Touch upload<br/>read back"]
+    S --> L["Run ledger<br/>in git"]
     S --> R["Run record<br/>every run"]
-    S --> L["Run ledger in git<br/>armed runs"]
-    S --> Q["QA Touch upload<br/>read back and checked"]
-    S --> P["Run archive<br/>run page, health page"]
-    subgraph sched["Scheduled runs (Sep 2026)"]
-        N["Nightly on a Linux lab server"]
-        X["Windows runner for H.265 video"]
-    end
-    N --> W
-    X --> W
-    P --> K["Slack post per run"]
+    P --> K["Slack post<br/>per run"]
+    P -.-> E["Email report<br/>built, not switched on"]
 ```
 
 Both suites install the shared package as a wheel kept inside each repo, so a
 new teammate needs read access to one repo and nothing else. The package hands
 each finished run to a list of destinations ("sinks"). Adding a destination,
-such as a JUnit file, means adding a class, not changing the reporter.
+such as a JUnit file, means adding a class, not changing the reporter. The
+nightly and the Windows runner ran on a schedule from September 2026. Each run
+posted to Slack. An email report, sent through Microsoft 365 to a distribution
+list, was built and could be sent by hand, but was not switched on for the
+scheduled runs (the dotted line).
 
 ## What I would point a QA manager at
 
@@ -170,6 +168,7 @@ What did not:
 - Results reached QA Touch only from runs started by hand. The scheduled
   nightly never uploaded.
 - Automatic Jira bug filing was built, and never switched on.
+- The email report was built, and never switched on for the scheduled runs.
 - The suite is mostly end-to-end. Backend behaviour such as user directory
   sync, multi-factor sign-in and webhooks belonged in the API suite, and that
   shift had only started.
