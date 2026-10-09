@@ -23,7 +23,6 @@ FILL = {
     "suite": "#0969da",
     "core": "#8250df",
     "output": "#1a7f37",
-    "defect": "#cf222e",
     "notify": "#bc4c00",
 }
 
@@ -97,10 +96,10 @@ def build(theme: str) -> str:
     # Test suites.
     parts.append(group(20, 160, 860, 124, "Test suites", t))
     parts.append(box(85, 192, 320, 76, "suite", ["Soterix-WebApp-QA", "Playwright + pytest", "402 browser tests"]))
-    parts.append(box(495, 192, 320, 76, "suite", ["Soterix-API-QA", "requests + pytest", "internal and partner APIs"]))
+    parts.append(box(495, 192, 320, 76, "suite", ["Soterix-API-QA", "HTTP requests + pytest", "Internal and partner APIs"]))
 
     # The shared pipeline at the centre.
-    parts.append(hexagon(450, 318, 460, 76, "core", ["SOTERIX-QA-SHARED", "shared pytest pipeline, installed as a wheel"]))
+    parts.append(hexagon(450, 318, 460, 76, "core", ["SOTERIX-QA-SHARED", "Shared pytest pipeline package"]))
 
     # Outputs, in three groups.
     gy, gh, gw = 432, 222, 270
@@ -108,15 +107,15 @@ def build(theme: str) -> str:
     parts.append(group(315, gy, gw, gh, "Test management", t))
     parts.append(group(610, gy, gw, gh, "Records", t))
 
-    parts.append(box(40, gy + 38, 230, 60, "output", ["Run archive", "run page, health page"]))
-    parts.append(box(40, gy + 128, 110, 62, "notify", ["Slack", "post per run"]))
+    parts.append(box(40, gy + 38, 230, 60, "output", ["Run archive", "Run page, health page"]))
+    parts.append(box(40, gy + 128, 110, 62, "notify", ["Slack", "Post per run"]))
     parts.append(box(160, gy + 128, 110, 62, "notify", ["Email", "Microsoft 365"]))
 
-    parts.append(box(335, gy + 38, 230, 60, "output", ["QA Touch", "results read back and checked"]))
-    parts.append(box(335, gy + 128, 230, 76, "defect", ["Jira bug filer", "scored on failure history,", "approved by QA, then filed"]))
+    parts.append(box(335, gy + 38, 230, 60, "output", ["QA Touch", "Results read back and checked"]))
+    parts.append(box(335, gy + 128, 230, 76, "output", ["Jira bug filer", "Scored on failure history,", "approved by QA, then filed"]))
 
-    parts.append(cylinder(650, gy + 34, 190, 70, "output", ["Run record", "every run"]))
-    parts.append(cylinder(650, gy + 124, 190, 70, "output", ["Run ledger", "kept in git"]))
+    parts.append(cylinder(650, gy + 34, 190, 70, "output", ["Run record", "Every run"]))
+    parts.append(cylinder(650, gy + 124, 190, 70, "output", ["Run ledger", "Kept in git"]))
 
     # Arrows: schedule to the browser suite.
     parts.append(path([(140, 114), (140, 150), (205, 150), (205, 190)], t))

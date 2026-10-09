@@ -1,26 +1,36 @@
 # QA Automation Case Study: Soterix Systems
 
-I was System Platform QA/QC Manager at Soterix Systems, a startup selling AI
-video analytics as a service: cameras on customer sites, edge boxes with NVIDIA GPUs running the
-analytics, and a cloud web app called NexaiQ-Core. I managed the QA team, the
-test automation program and the API testing effort. Between July 2025 and
-September 2026 I built the test automation, from a first Playwright script to
-three connected repos: a browser test suite, an API test suite, and a shared
-pytest pipeline that records every run, explains its failures and reports the
-results to the team's test management tool. I wrote it with AI coding agents,
-under rules and checks I set up so that their output had to prove itself.
-
-Soterix has since closed. The repos are kept as they were at the end, with the
-few fixes listed at the bottom of this page.
+I was System Platform QA/QC Manager at Soterix Systems, a company selling AI
+video analytics as a service: cameras on customer sites, edge boxes with NVIDIA
+GPUs running the analytics, and a cloud web app called NexaiQ-Core. I managed
+the QA team, the test automation program and the API testing effort, and I
+built the automation myself: a browser test suite, an API test suite, and a
+shared pytest pipeline that records every run, explains its failures and
+reports the results to the team's test management tool. I built it with AI
+coding agents, under rules and checks I set up so that their output had to
+prove itself.
 
 | | |
 |---|---|
-| Browser tests | 402 Playwright tests across 13 product areas, each mapped to its manual test case |
+| Browser tests | 402 Playwright tests across 13 product areas, each mapped to its test case in QA Touch |
 | API tests | 55 functional tests, a sweep of 101 read endpoints, 17 partner-API tests |
-| Framework tests | 475 in the browser repo, 42 in the API repo, 652 test functions in the shared package |
-| Test cases | 3,303 test cases in QA Touch, the team's test management tool |
-| History | About 900 commits across the three repos, 31 tagged releases of the shared package |
-| Stack | Python, pytest, Playwright, requests, GitHub Actions, QA Touch, Jira |
+| Tests of the tooling itself | 475 in the browser repo, 42 in the API repo, 652 in the shared package |
+| Test management | 3,303 test cases in QA Touch, with Jira for defects |
+| Scale | About 900 commits across three repos, 31 tagged releases of the shared package |
+| Stack | Python, pytest, Playwright, REST API testing (requests), CI/CD with GitHub Actions, QA Touch, Jira, Slack, Microsoft 365, AI coding agents (Claude Code, OpenAI Codex, Microsoft 365 Copilot) |
+
+## Leading the QA function
+
+- Managed the QA team, including the manual release regression run in QA Touch.
+- Moved the team's test cases into QA Touch and tied every automated browser
+  test to its case, so automated and manual results report in one place.
+- Set up a one-page weekly status report for leadership (green, yellow, red,
+  each red item with an owner and a date), and a weekly defect triage in which
+  every open bug leaves with an owner and a sprint, or a reason it has neither.
+- Ran a failure register for the automation: 135 numbered issues, each with an
+  owner, a status and the next action.
+- Owned the test automation and API testing programs end to end: strategy,
+  framework, tooling, scheduled runs and reporting.
 
 ## The three repos
 
@@ -28,33 +38,36 @@ few fixes listed at the bottom of this page.
 |---|---|---|
 | [Soterix-WebApp-QA](https://github.com/JustVar/Soterix-WebApp-QA) | Browser tests of the web app. A test does what a user does in Chrome, and a report page says what failed and why. | [the stream guard](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tests/shared/helpers/stream_health.py), [the convention checker](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/convention_check.py) |
 | [Soterix-API-QA](https://github.com/JustVar/Soterix-API-QA) | API tests of the internal and partner APIs, with no browser. | [the login triage](https://github.com/JustVar/Soterix-API-QA/blob/main/api_clients/auth_helper.py), [the endpoint inventory](https://github.com/JustVar/Soterix-API-QA/blob/main/docs/INTERNAL_API_INVENTORY.md) |
-| [SOTERIX-QA-SHARED](https://github.com/JustVar/SOTERIX-QA-SHARED) | The pipeline both suites install: run records, report pages, the QA Touch upload, the CI gates. | [the read-back upload](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/qatouch/upload.py), [the run page](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/reporting/run_page.py) |
+| [SOTERIX-QA-SHARED](https://github.com/JustVar/SOTERIX-QA-SHARED) | The pipeline both suites install: run records, report pages, the QA Touch upload, the CI gates. | [the verified upload](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/qatouch/upload.py), [the run report page](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/reporting/run_page.py) |
 
-## How the pieces fit
+## How it fits together
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="diagram/architecture-dark.svg">
   <img src="diagram/architecture-light.svg" width="900" alt="Scheduled runs on a Linux lab server and a Windows runner feed the browser suite. Both test suites run through the shared pytest pipeline, which produces reports (run archive, Slack, email), test management results (QA Touch, a Jira bug filer) and run records.">
 </picture>
 
-Both suites install the shared package as a wheel kept inside each repo, so a
-new teammate needs read access to one repo and nothing else. The package hands
-each finished run to a list of destinations ("sinks"). Adding a destination,
-such as a JUnit file, means adding a class, not changing the reporter. The
-nightly and the Windows runner ran on a schedule from September 2026, and
-each run posted to Slack. The package also emails a run's report to a
-distribution list through Microsoft 365. A Jira bug filer scores each failure
-on its history and on the health of the environment, queues the bug for a QA
-person to approve, and then files it with every required field of the Jira
-project filled in. The diagram is generated by
-[diagram/build_diagram.py](diagram/build_diagram.py).
+A nightly on a Linux lab server ran the browser suite against two test
+tenants, and a Windows machine ran the live-video tests, which need a browser
+that can decode H.265 video. Each run posted a summary to Slack, and the
+pipeline can email a run's report to a distribution list through Microsoft 365.
 
-## What I would point a QA manager at
+Both suites install the shared pipeline as a package kept inside each repo, so
+a new engineer needs access to one repo and nothing else. The pipeline hands
+each finished run to a list of destinations, and adding one, such as a JUnit
+file or a dashboard feed, means adding a small class, not changing the core.
 
-1. **An upload that does not trust the vendor.** QA Touch answers "success"
+A Jira bug filer scores each failure on its history and on the health of the
+test environment, queues the bug for a QA engineer to approve, and then files
+it with every required field of the Jira project filled in. The diagram is
+generated by [diagram/build_diagram.py](diagram/build_diagram.py).
+
+## Engineering highlights
+
+1. **Results that are checked, not trusted.** QA Touch's API answers "success"
    for results it throws away. The uploader reads every result back and
-   compares it, and a read-back that cannot run is marked unverified and
-   queued for retry, never counted as a pass.
+   compares it, and a result it cannot confirm is queued for retry, never
+   counted as a pass.
    [upload.py](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/qatouch/upload.py)
 2. **A report that names causes, not just failures.** The run page opens with
    a one-sentence verdict, groups failures that share one error, labels known
@@ -63,64 +76,66 @@ project filled in. The diagram is generated by
    [run_page.py](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/reporting/run_page.py)
 3. **Measuring the environment before blaming the test.** The live-video
    tests need H.265, which Chrome on Linux cannot decode. Before any of them
-   runs, the stream guard opens the media socket, counts frames, reads the
+   runs, the stream guard opens the video stream, counts frames, reads the
    codec and asks this browser whether it can play it. It measures twice
    before skipping, and it refuses headless Chrome on Windows, which claims
    the codec and never decodes a frame.
    [stream_health.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tests/shared/helpers/stream_health.py)
-4. **Failing in one line instead of one minute.** A preflight signs in through
-   the API before any browser opens and prints one line naming the cause:
-   server down, wrong password, or wrong site.
+4. **Failing in one line instead of one minute.** Before any browser opens, a
+   preflight signs in through the API and prints one line naming the cause of
+   a problem: server down, wrong password, or wrong site.
    [preflight.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tests/shared/helpers/preflight.py)
-5. **House rules a machine enforces.** A convention checker reads the code
-   on every commit and blocks the patterns that caused real defects. Each
-   message names the defect behind the rule.
+5. **House rules a machine enforces.** A convention checker reads the code on
+   every commit and blocks the patterns that caused real defects. Each message
+   names the defect behind the rule.
    [convention_check.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/convention_check.py)
 6. **Test cases that come from the tests.** Each test carries its steps and
-   expected result. A tool turns them into QA Touch cases, and an audit
-   scores every test against its case and flags weak matches. Every one of the
-   402 browser tests is mapped.
+   expected result. A tool turns them into QA Touch cases, and an audit scores
+   every test against its case and flags weak matches. All 402 browser tests
+   are mapped.
    [qatouch_cases_from_tests.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/qatouch_cases_from_tests.py),
    [qatouch_mapping_audit.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/qatouch_mapping_audit.py)
-7. **Credentials that cannot leak into evidence.** A password once reached a
-   shared test log through a failing test's printout. Every password is now a
-   type that prints `***`, and a scan checks run evidence for leaked values in
-   escaped forms too.
+7. **Credentials that cannot leak into evidence.** Every password is a type
+   that prints `***`, and a scan checks the evidence of each run for leaked
+   values, including escaped forms. Both were added after a password reached a
+   shared test log.
    [secret.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/config/secret.py),
    [evidence_scan.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/evidence_scan.py)
 8. **API failures that explain themselves.** A failed login says whether the
-   account is unknown, the password is stale or the server is unreachable.
-   A failed test carries its HTTP exchanges with secrets masked. Every
-   endpoint the sweep skips records where and when the failure was measured.
+   account is unknown, the password is stale or the server is unreachable. A
+   failed test carries its HTTP requests and responses with secrets masked.
+   Every endpoint the sweep skips records where and when the failure was
+   measured.
    [auth_helper.py](https://github.com/JustVar/Soterix-API-QA/blob/main/api_clients/auth_helper.py),
    [endpoints.py](https://github.com/JustVar/Soterix-API-QA/blob/main/tests/internal_api/data/endpoints.py)
-9. **Packaging that cannot drift.** CI installs the built wheel and imports
+9. **Releases that cannot drift.** CI installs the built package and imports
    it, refuses a release tag that differs from the package version, and pins
-   every action to a commit. Each test repo has a test that fails when its
-   installed version, its requirements line and its wheel disagree.
+   every action to a commit. Each test repo has a test that fails when the
+   version it runs differs from the version it declares.
    [ci.yml](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/.github/workflows/ci.yml)
 
 ## What the testing found
 
-- An API call that answered `Successfully deleted!` and deleted nothing.
-  The defect was confirmed in the UI.
+- An API call that answered `Successfully deleted!` and deleted nothing,
+  confirmed in the UI.
   ([API_SURFACES.md](https://github.com/JustVar/Soterix-API-QA/blob/main/docs/API_SURFACES.md))
 - The vendor's OpenAPI spec was missing at least 14 production endpoints, and
   it gives every endpoint the suites call a generic wrapper as its response,
-  so it cannot say what an endpoint returns. The 83 internal endpoints the
-  suites use are documented from the live system instead, each with the date
-  it was last confirmed.
-- The first live run of the endpoint sweep failed 30 of 101. The cause was in
-  the harness (a channel looked up on the wrong site), not the product. After
-  the fix: 120 passed, 47 skipped, 0 failed.
-- By late September the nightly ended with about 30 red tests per tenant, most
-  of them app defects already reported. A known-defects list labelled 16 of
-  those tests (6 defects), so a reader could see the new failures in minutes.
+  so it cannot describe what an endpoint returns. The suites document the 83
+  internal endpoints they use from the live system instead, each with the
+  date it was last confirmed.
+- The first live run of the endpoint sweep failed 30 of 101 endpoints. The
+  cause was in the test code (a channel looked up on the wrong site), not the
+  product. After the fix the whole internal API suite ran 120 passed and 0
+  failed, with 47 skipped for documented reasons.
+- A known-defects list labels the failures caused by app defects already
+  reported (when in use, it held 16 tests across 6 defects), so the run page separates them from
+  new failures and a reader finds the new ones in minutes.
 
-## How I worked with AI coding agents
+## How I work with AI coding agents
 
-I wrote this code with AI coding agents (Claude Code, OpenAI Codex and
-Microsoft 365 Copilot). The work that mattered was keeping their output honest:
+I built this with AI coding agents (Claude Code, OpenAI Codex and Microsoft 365
+Copilot). The work that mattered was keeping their output honest:
 
 - **Written rules.** Every repo has an
   [AGENTS.md](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/AGENTS.md):
@@ -132,68 +147,52 @@ Microsoft 365 Copilot). The work that mattered was keeping their output honest:
   and CI steps: no credential in a staged line, the conventions hold, the test
   count did not fall, lint is clean, the offline suites pass.
 - **Measure, do not assert.** A number in a doc or a commit has to come from a
-  command that was run. A check has to fail when it should, not only pass, and
-  that is shown before it is trusted. A test is believed once a deliberate bug
-  makes it fail.
-- **Adversarial review.** On 1 Sep 2026 I had the pipeline audited across
-  seven dimensions (concurrency, multiple environments, network, partial
-  outage, data integrity, security, performance): 32 raw findings, 30
-  confirmed, each given a disposition. The worst was a trace file that could
-  leak session cookies from the evidence archive. It was fixed.
+  command that was run. A check has to be shown failing when it should before
+  it is trusted, and a test is believed once a deliberate bug makes it fail.
+- **Adversarial review.** I had the pipeline audited across seven dimensions
+  (concurrency, multiple environments, network, partial outage, data
+  integrity, security, performance): 32 raw findings, 30 confirmed, each
+  given a resolution. The most serious, a trace file that could expose session
+  cookies in the evidence archive, was fixed.
 - **A writing standard.** Docs, comments and commit messages follow a short
-  style guide with a mechanical check, so the prose stays plain and
-  consistent no matter who or what wrote it.
+  style guide with a mechanical check, so the prose stays plain and consistent
+  whoever or whatever wrote it.
 
-## What ran, and what did not
+## What this makes possible
 
-What ran:
+What is built supports these next steps directly:
 
-- The browser suite ran every night on a Linux lab server against two tenants.
-  The rebuilt nightly first completed on 11 Sep 2026, and each run posted to
-  Slack from 25 Sep.
-- A Windows machine ran the live-video tests, which need a browser that can
-  decode H.265.
-- A failure register tracked 135 numbered issues, each with an owner, a status
-  and the next action.
+- **Results in QA Touch from every scheduled run.** The pieces exist: the
+  scheduled runner, the verified upload, a tool that builds a QA Touch run
+  from the mapping, and the mapping itself. Joining them is configuration.
+- **A manual regression that shrinks as automation grows.** Because every
+  browser test is mapped to its QA Touch case, each release can run as two
+  runs: one the pipeline fills, and one for the manual team that holds only
+  the cases no test covers yet.
+- **Faster, steadier coverage of backend behaviour.** An API test runs in about
+  a second, against about 13 seconds for a browser test, so checks of server
+  behaviour can move to the API suite and keep the browser suite for what a
+  user sees.
+- **New products on the same pipeline.** A new suite, such as the partner
+  admin tool or the mobile app, installs the shared package and gets the run
+  records, report pages, QA Touch upload and CI gates through a thin setup
+  layer, with no new pipeline code.
+- **Defects filed from failures, with a person in the loop.** The Jira bug
+  filer turns a confirmed failure into a complete bug report once a QA
+  engineer approves it.
+- **A team that can run it without its author.** A new engineer needs read
+  access to one repo, the offline suites run on any machine, and every rule
+  is written down with the reason behind it.
 
-What did not:
+## Running the code
 
-- Results reached QA Touch only from runs started by hand. The scheduled
-  nightly never uploaded.
-- The suite is mostly end-to-end. Backend behaviour such as user directory
-  sync, multi-factor sign-in and webhooks belonged in the API suite, and that
-  shift had only started.
-
-On 29 Sep 2026 I cut the repos back to one QA server and no schedule, so that
-someone else could run them. Everything that
-left is kept under the git tag `pre-pivot`, and each repo's ARCHIVE.md lists
-what left and how to bring it back.
-
-## What I would do next
-
-- Arm the nightly so QA Touch fills itself, and split each release into an
-  automated run and a manual run, so the manual run shrinks every time a test
-  is mapped.
-- Move backend checks to the API suite, where a test runs in about a second
-  against about 13 seconds in the browser.
-- Give a teammate ownership of one repo. Most of the framework had one author,
-  which was the biggest risk in the program.
-
-## Changes made after the company closed
-
-To make the repos readable from outside, in October 2026:
-
-- The smoke set (`run.py smoke`) selected no tests. It now holds 18 read-only
-  tests, one or two per product area, with a check that keeps it that way.
-- Ten old test-case snapshots left the main branch (58 MB to 18 MB).
-- The API README no longer claims response schema validation, for the reason
-  given above.
-- Clone links point at these repos, each README opens with a short summary,
-  and some dead code left the shared package.
-
-CI is switched off here. It ran on the company's copies of these repos, and
-there is no server left to test against. The offline suites still run on any
-machine, and each repo's README says how.
+Soterix has since closed and its QA server is gone, so the browser and API
+suites have nothing to run against. Each repo's offline suites still run on
+any machine, and each README's first section says how. CI ran on the
+company's copies of these repos and is switched off here. The full scheduled
+setup (the nightly, the published run archive, the Slack posts and the
+Windows runner) is preserved under a git tag in each repo, and each repo's
+ARCHIVE.md lists it.
 
 ## Contact
 
