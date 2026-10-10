@@ -55,7 +55,7 @@ their output had to prove itself.
 A nightly on a Linux lab server ran the browser suite against two test
 tenants (separate customer accounts on the QA server), and a Windows machine ran the live-video tests, which need a browser
 that can decode H.265 video. Each run posted a summary to Slack
-([announce_run.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/pre-pivot/tools/announce_run.py)), and the
+([announce_run.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/archive/pre-pivot/tools/announce_run.py)), and the
 pipeline can email a run's report to a distribution list through Microsoft 365.
 Any run, scheduled or started by hand, uploads its results to QA Touch when
 the upload switch is on (`--qatouch-upload` with a QA Touch run key), and every
@@ -70,9 +70,9 @@ destinations are listed; the reporter's hooks stay as they are.
 A Jira bug filer scores each failure on its history and on the health of the
 test environment, queues the bug for a QA engineer to approve, and then files
 it with every required field of the Jira project filled in
-([smart_jira_bug_creator.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/pre-pivot/tools/smart_jira_bug_creator.py)). The
-scheduled setup, the Slack post and the bug filer are kept under the
-`pre-pivot` tag, so these two links open that tag.
+([smart_jira_bug_creator.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/archive/pre-pivot/tools/smart_jira_bug_creator.py)). The
+scheduled setup, the Slack post and the bug filer are kept on the
+`archive/pre-pivot` branch, so these two links open that branch.
 
 ## Engineering highlights
 
@@ -193,11 +193,11 @@ What is built supports these next steps directly:
 
 Soterix has since closed and its QA server is gone, so the browser and API
 suites have nothing to run against. Each repo's offline suites still run on
-any machine, and each README's first section says how. CI ran on the
-company's copies of these repos and is switched off here. The full scheduled
-setup (the nightly, the published run archive, the Slack posts and the
-Windows runner) is preserved under the `pre-pivot` tag in each repo, and the
-ARCHIVE.md in each test repo lists it.
+any machine, and each README's first section says how. CI ran on the company's
+copies of these repos and is switched off here. The full scheduled setup (the
+nightly, the published run archive, the Slack posts and the Windows runner) is
+preserved on the `archive/pre-pivot` branch in each repo, and the ARCHIVE.md
+in each test repo lists it.
 
 ## Contact
 
