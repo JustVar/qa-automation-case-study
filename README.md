@@ -1,39 +1,21 @@
 # QA Automation Case Study: Soterix Systems
 
-I was System Platform QA/QC Manager at Soterix Systems, a company selling AI
-video analytics as a service: cameras on customer sites, edge boxes with NVIDIA
-GPUs running the analytics, and a cloud web app called NexaiQ-Core. I managed
-the QA team, the test automation program and the API testing effort, and I
-built the automation myself: a browser test suite, an API test suite, and a
-shared pytest pipeline that records every run, explains its failures and
-reports the results to the team's test management tool. I built it with AI
-coding agents, under rules and checks I set up so that their output had to
-prove itself.
+A test automation framework I built for NexaiQ-Core, the cloud web app of
+Soterix Systems, a company selling AI video analytics as a service, while I was
+its System Platform QA/QC Manager. It is three connected repos: a browser test
+suite, an API test suite, and a shared pytest pipeline that records every run,
+explains its failures, reports the results to QA Touch, Slack and email, and
+files bugs in Jira. I built it with AI coding agents, under rules and checks I set up so
+that their output had to prove itself.
 
 | | |
 |---|---|
 | Browser tests | 402 Playwright tests across 13 product areas, each mapped to its test case in QA Touch |
 | API tests | 55 functional tests, a sweep of 101 read endpoints, 17 partner-API tests |
 | Tests of the tooling itself | 475 in the browser repo, 42 in the API repo, 652 in the shared package |
-| Test management | 3,303 test cases in QA Touch, with Jira for defects |
+| Integrations | QA Touch (test management), Jira (defects), Slack and Microsoft 365 email (reports) |
 | Scale | About 900 commits across three repos, 31 tagged releases of the shared package |
 | Stack | Python, pytest, Playwright, REST API testing (requests), CI/CD with GitHub Actions, QA Touch, Jira, Slack, Microsoft 365, AI coding agents (Claude Code, OpenAI Codex, Microsoft 365 Copilot) |
-
-## Leading the QA function
-
-- Managed the QA team: coaching and mentoring, setting priorities, and the
-  manual release regression run in QA Touch.
-- Moved the team's test cases into QA Touch, trained the team to work in it,
-  and tied every automated browser test to its case, so automated and manual
-  results report in one place.
-- Reported to leadership with a one-page weekly status report (green, yellow,
-  red, each red item with an owner and a date).
-- Ran a weekly defect triage in which every open bug leaves with an owner and
-  a sprint, or a reason it has neither.
-- Ran a failure register for the automation: 135 numbered issues, each with an
-  owner, a status and the next action.
-- Owned the test automation and API testing programs end to end: strategy,
-  framework, tooling, scheduled runs and reporting.
 
 ## The three repos
 
