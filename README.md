@@ -17,7 +17,7 @@ their output had to prove itself.
 |---|---|
 | Browser tests | 402 Playwright tests across 13 product areas, each mapped to its test case in QA Touch |
 | API tests | 55 functional tests, a sweep of 101 read endpoints, 17 partner-API tests |
-| Tests of the tooling itself | 643 in the browser repo, 47 in the API repo, 850 in the shared package, all offline |
+| Tests of the tooling itself | 645 in the browser repo, 47 in the API repo, 850 in the shared package, all offline |
 | Integrations | QA Touch (test management), Jira (defects), Slack and Microsoft 365 email (reports) |
 | Scale | About 900 commits across three repos, 31 tagged releases of the shared package |
 | Stack | Python, pytest, Playwright UI and end-to-end automation with the Page Object Model, REST API testing (requests), CI/CD with GitHub Actions, QA Touch, Jira, Slack, Microsoft 365, AI coding agents (Claude Code, OpenAI Codex, Microsoft 365 Copilot) for agentic development |
