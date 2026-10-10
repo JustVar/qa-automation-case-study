@@ -22,9 +22,9 @@ their output had to prove itself.
 | Scale | About 900 commits across three repos, 31 tagged releases of the shared package |
 | Stack | Python, pytest, Playwright UI and end-to-end automation with the Page Object Model, REST API testing (requests), CI/CD with GitHub Actions, QA Touch, Jira, Slack, Microsoft 365, AI coding agents (Claude Code, OpenAI Codex, Microsoft 365 Copilot) for agentic development |
 
-## If you have 15 minutes
+## Where to start
 
-1. This page, then the diagram below.
+1. This page and its diagram.
 2. A run report page:
    [run_page.py](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/reporting/run_page.py)
    builds it, and its docstring says what each level shows.
@@ -136,25 +136,6 @@ services. Building it ourselves meant it fit the team's actual needs, such as
 checking every QA Touch result and testing live H.265 video. And because it was
 built with AI coding agents, building it in-house let me vet the agents' work
 step by step, under the same rules and checks as the tests themselves.
-
-## What the testing found
-
-- An API call that answered `Successfully deleted!` and deleted nothing,
-  confirmed in the UI.
-  ([API_SURFACES.md](https://github.com/JustVar/Soterix-API-QA/blob/main/docs/API_SURFACES.md))
-- The vendor's OpenAPI spec was missing at least 14 production endpoints, and
-  it gives every endpoint the suites call a generic wrapper as its response,
-  so it cannot describe what an endpoint returns. The suites document the 83
-  internal endpoints they use from the live system instead, each with the
-  date it was last confirmed.
-- The first live run of the endpoint sweep failed 30 of 101 endpoints, and
-  reading the failures traced them to the test setup (a channel looked up on
-  the wrong site), not the product. After the fix the whole internal API
-  suite ran 120 passed and 0 failed, with 47 skipped for documented
-  reasons.
-- A known-defects list labels the failures caused by app defects already
-  reported (when in use, it held 16 tests across 6 defects), so the run page separates them from
-  new failures and a reader finds the new ones in minutes.
 
 ## How I work with AI coding agents
 
