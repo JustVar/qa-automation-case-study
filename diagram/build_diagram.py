@@ -103,7 +103,7 @@ def build(theme: str) -> str:
     parts.append(pill(40, 54, 200, 60, "schedule", ["Nightly", "Linux lab server"], archived=True, t=t))
     parts.append(pill(250, 54, 200, 60, "schedule", ["Windows runner", "H.265 live video"]))
     parts.append(group(490, 20, 390, 114, "Started by hand", t))
-    parts.append(pill(585, 54, 200, 60, "schedule", ["pytest or run.py", "Any suite, any test"]))
+    parts.append(pill(585, 54, 200, 60, "schedule", ["pytest, by hand", "Any suite, any test"]))
 
     # Test suites.
     parts.append(group(20, 160, 860, 124, "Test suites", t))

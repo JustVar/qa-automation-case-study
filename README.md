@@ -10,8 +10,8 @@ published here for review, and only the offline tests can still run.
 
 The framework is three connected repos: a browser test suite, an API test
 suite, and a shared pytest pipeline. The pipeline records every run, explains
-its failures, uploads the results to QA Touch and emails reports through
-Microsoft 365. QA Touch is a test management tool: it holds a team's test
+its failures, uploads the results to QA Touch, and holds a sender that emails
+reports through Microsoft 365. QA Touch is a test management tool: it holds a team's test
 cases and records the result of each test run, manual or automated. A daily
 Slack summary and a Jira bug filer were built alongside it. I built the
 framework with AI coding agents, under rules and checks I set up so that their
@@ -20,8 +20,8 @@ output had to prove itself.
 | | |
 |---|---|
 | Browser tests | 402 Playwright tests across 13 product areas, each mapped to its test case in QA Touch |
-| API tests | 52 functional tests, 17 partner-API tests, and a sweep that calls 101 read-only endpoints and checks that each one answers |
-| Hardware tests | 33 tests of the cameras' own web pages and firmware, run on each of 17 lab camera entries (kept on the archive branch) |
+| API tests | 52 functional tests of the internal API, 17 partner-API tests (3 key checks and a 14-endpoint sweep), and a sweep of 101 read-only internal endpoints: 67 called on every run, 34 skipped with the measured reason |
+| Hardware tests | 33 tests of the cameras' own web pages and firmware, run on each enabled camera in the lab registry (10 of 34 entries), kept on the archive branch |
 | Tests of the tooling itself | 645 in the browser repo, 47 in the API repo, 850 in the shared package, all offline. The pipeline writes to the team's system of record, so it is tested like product code |
 | Integrations | QA Touch (test management), Jira (defects), Slack and Microsoft 365 email (reports) |
 | Scale | Over 900 commits across three repos, 31 tagged releases of the shared package |
@@ -62,8 +62,8 @@ The [Terms](#terms) section at the end explains the words the repos use.
 
 ### What happens in one run
 
-1. A person starts pytest, by hand or with `run.py`, or the Windows runner
-   starts the live-video tests on a schedule. A nightly on a Linux lab server
+1. A person starts pytest by hand (the browser repo also has `run.py`), or
+   the Windows runner starts the live-video tests on a schedule. A nightly on a Linux lab server
    used to run the browser suite against two test tenants.
 2. A browser run first signs in through the API (the preflight check). If the
    server is down or refuses the account, one line says so and no test runs.
@@ -72,12 +72,13 @@ The [Terms](#terms) section at the end explains the words the repos use.
 3. The tests run. Two plugins from the shared package watch them: the run
    archive keeps each test's evidence and writes the run page, and the
    reporter records one result per test.
-4. The reporter hands the results to its destinations: the run record (every
-   run), the run ledger (armed runs only), and, when the upload is
-   armed with `--qatouch-upload` and a QA Touch run key, the QA Touch upload,
-   which reads every result back and checks it.
+4. The reporter hands the results to its destinations: the run record on
+   every run, and the run ledger on armed runs only. When the upload is armed
+   with `--qatouch-upload` and a QA Touch run key, the results also go to QA
+   Touch, and the uploader reads every result back and checks it.
 5. A person reads the run page: the verdict, the causes, then one test at a
-   time. The pipeline can also email the report through Microsoft 365.
+   time. The shared package also holds a sender that emails the report
+   through Microsoft 365.
 
 On the `archive/pre-pivot` branch, a daily Slack message listed each run's
 results and any run that should have happened and did not
@@ -129,8 +130,8 @@ video and Playwright trace of the failure.
    the cause and no test runs.
    [preflight.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tests/shared/helpers/preflight.py)
 5. **House rules a machine enforces.** A convention checker reads the code on
-   every commit and blocks the patterns that caused real defects. Each message
-   names the defect behind the rule.
+   every commit and blocks the patterns that caused real defects. Most
+   messages name the defect behind the rule.
    [convention_check.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/convention_check.py)
 6. **Test cases that come from the tests.** Most tests (325 of 402) carry
    their steps and expected result. A tool turns them into QA Touch cases, and
@@ -139,7 +140,7 @@ video and Playwright trace of the failure.
    [qatouch_cases_from_tests.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/qatouch_cases_from_tests.py),
    [qatouch_mapping_audit.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/qatouch_mapping_audit.py)
 7. **Credentials kept out of evidence.** Every password is wrapped in a type
-   that shows as `***` in tracebacks, logs and test reports, and a scan tool
+   that shows as `***` in tracebacks and test reports, and a scan tool
    checks a run's evidence for leaked values, including encoded and escaped
    copies, and redacts them. Both were added after a failed login wrote a
    password into a test log that was shared with the team.
@@ -235,11 +236,13 @@ the ARCHIVE.md in each test repo lists what is there.
 | Term | Meaning |
 |---|---|
 | Tenant | One customer account on the QA server. The nightly tested two. |
+| Internal API | The API the web app itself calls (`/v-apiserver`), signed in with a session cookie. |
+| Partner API | The API the product offers to third-party systems (`/v-integration-api`), with a static key in each request. |
 | Preflight | The sign-in check a browser run makes through the API before any browser opens. |
 | Stream guard | The check that this browser can play the server's live video before the live-video tests run. |
 | H.265 | The video format the cameras streamed. Chrome on Linux cannot decode it; Chrome on Windows can. |
 | Headless | A browser run with no window. Faster, but on Windows it claims H.265 and plays nothing. |
-| Sweep | One API test run once per endpoint: it calls each of 101 read-only endpoints and checks the answer. |
+| Sweep | One API test run once per endpoint. The internal sweep lists 101 read-only endpoints, calls 67 and checks each answer, and skips 34 with the measured reason. |
 | Run archive | The folder of one run's evidence, with its run page (`run.html`) and an index of all runs. |
 | Run record | The JSON file of the latest run's results that the repo's tools read. |
 | Run ledger | One line per armed run in `history/`, so results stay comparable over time. The nightly committed it to git. |
