@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Demo Video Portal - Live</title><link rel="stylesheet" href="style.css"></head>
+<body><header><b>Demo Video Portal</b><a href="live.html">Live</a><a href="events.html">Events</a><a href="admin.html">Users</a><a href="login.html" id="logout">Sign out</a></header>
+<main><h2>Live view</h2>
+<select id="layout"><option>2x2</option><option>1x1</option></select>
+<div class="grid" id="grid"></div><button id="snap" style="max-width:200px;margin-top:14px">Snapshot</button></main>
+<script>
+const cams = ['Lobby-1','Gate-2','Parking-3','Dock-4'];
+const stall = new URLSearchParams(location.search).get('stall') === '1';
+document.getElementById('grid').innerHTML = cams.map(c => `<div class="tile" data-cam="${c}"><span class="name">${c}</span><div class="spin"></div><span>Connecting...</span><video muted></video></div>`).join('');
+if (!stall) document.querySelectorAll('.tile').forEach((t, i) => {
+  const c = document.createElement('canvas'); c.width = 320; c.height = 180; const g = c.getContext('2d'); let f = 0;
+  setInterval(() => { f++; g.fillStyle = `hsl(${(i * 70 + f) % 360},35%,28%)`; g.fillRect(0, 0, 320, 180);
+    g.fillStyle = '#ffffff22'; for (let k = 0; k < 6; k++) g.fillRect((f * 3 + k * 60) % 340 - 20, 40 + k * 18, 40, 10);
+    g.fillStyle = '#fff'; g.font = '14px monospace'; g.fillText('frame ' + f, 220, 168); }, 66);
+  const v = t.querySelector('video'); v.srcObject = c.captureStream(15); v.play();
+  t.querySelector('.spin').remove(); t.querySelector('span:not(.name)').remove(); });
+document.getElementById('snap').onclick = () => { const a = document.createElement('a'); a.download = 'snapshot.jpg'; a.href = 'data:image/jpeg;base64,/9j/4AAQ'; a.click(); };
+</script></body></html>

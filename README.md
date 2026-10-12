@@ -8,11 +8,20 @@ Soterix Systems, while I was its System Platform QA/QC Manager. Soterix sold
 AI video analytics as a service. The company has since closed, so the code is
 published here for review, and only the offline tests can still run.
 
+> **About the data in these repos.** They hold no passwords, keys, customer
+> data or exported test cases. Server addresses, logins, account and site
+> names, and people's names are replaced with generic placeholders such as
+> `qa.example.invalid`, `Example Corporate Office` and `qa@example.com`. The
+> git history of the browser and API repos was cleaned the same way. The
+> screenshots and the walkthrough below come from a demo run of made-up tests
+> against a small demo app, not from the company's systems.
+
 The framework is three connected repos: a browser test suite, an API test
 suite, and a shared pytest pipeline. The pipeline records every run, explains
 its failures, uploads the results to QA Touch, and holds a sender that emails
-reports through Microsoft 365. QA Touch is a test management tool: it holds a team's test
-cases and records the result of each test run, manual or automated. A daily
+reports through Microsoft 365. QA Touch is a test management tool: it holds a
+team's test cases and records the result of each test run, manual or
+automated. A daily
 Slack summary and a Jira bug filer were built alongside it. I built the
 framework with AI coding agents, under rules and checks I set up so that their
 output had to prove itself.
@@ -30,7 +39,7 @@ output had to prove itself.
 ## Where to start
 
 1. This page and its diagram.
-2. A run report page: the [screenshot below](#a-run-report-page), then
+2. A run report page: the [walkthrough and screenshots below](#a-run-report-page), then
    [run_page.py](https://github.com/JustVar/SOTERIX-QA-SHARED/blob/main/src/soterix_qa_shared/reporting/run_page.py),
    which builds it.
 3. One browser test and its page object:
@@ -96,13 +105,22 @@ where the destinations are listed; the reporter's hooks stay as they are.
 
 ### A run report page
 
-![The run page of a demo run: the verdict "4 of 14 failed. 2 causes.", the causes grouped by shared error, the failed tests by file, and one test's error in the side pane](images/run-page-demo.png)
+![A walkthrough of the run report: the verdict and the grouped causes, one failed test's error, its screenshots, Playwright actions and video, its history across runs, the health page and the run archive](images/report-walkthrough.gif)
 
-This page comes from a demo run of made-up tests, so it holds no company data.
-Three of the four failures share one error, so the page shows 2 causes, not 4
-failures. A click on a test opens its error, evidence, history and identity in
-the side pane. In a real browser run the evidence tab holds the screenshot,
-video and Playwright trace of the failure.
+These pages come from a demo run: 10 made-up browser tests against a small
+demo web app, run six times through the same shared pipeline, so they hold no
+company data. In the last run a live-video outage failed 3 tests with one
+error, and a search bug failed one more. The page shows 2 causes, not 4
+failures, and marks which failures are new since the previous run.
+The [demo folder](demo/README.md) holds the app and the tests, and says how
+to run them and make these images again.
+
+| | |
+|---|---|
+| [![The run page: the verdict, the 2 causes, the failed tests marked new or still failing, and the selected test's error](images/report-overview.png)](images/report-overview.png) | [![The evidence tab: the failure screenshots, the last Playwright actions with the password masked, the video of the test and the command that opens its trace](images/report-evidence.png)](images/report-evidence.png) |
+| **The run page.** The verdict, the causes grouped by shared error, and each failed test marked new or still failing. | **Evidence.** The screenshots, the last Playwright actions (the password shows as `***`), the video and the trace of the failed test. |
+| [![The history tab: the test's last 6 results as a strip, 3 of 6 passed, flaky 50%](images/report-history.png)](images/report-history.png) | [![The health page's tests to watch: each test that failed in its recent runs, with a strip of its results and its flaky rate](images/report-health.png)](images/report-health.png) |
+| **History.** One test's results across runs, and whether its error is new. | **Health.** Pass rates by module across the archived runs, and the tests to watch, each with its flaky rate. |
 
 ## Engineering highlights
 

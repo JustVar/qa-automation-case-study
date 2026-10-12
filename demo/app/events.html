@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Demo Video Portal - Events</title><link rel="stylesheet" href="style.css"></head>
+<body><header><b>Demo Video Portal</b><a href="live.html">Live</a><a href="events.html">Events</a><a href="admin.html">Users</a></header>
+<main><h2>Events</h2><div style="display:flex;gap:10px;max-width:520px"><select id="channel"><option>All channels</option><option>Lobby-1</option><option>Gate-2</option></select><button id="search">Search</button></div>
+<table><thead><tr><th>Time</th><th>Channel</th><th>Event</th></tr></thead><tbody id="rows"></tbody></table></main>
+<script>
+const all = [['08:02','Lobby-1','Person detected'],['08:15','Gate-2','Vehicle detected'],['08:31','Lobby-1','Loitering'],['08:47','Lobby-1','Person detected']];
+const leak = new URLSearchParams(location.search).get('leak') === '1';
+document.getElementById('search').onclick = () => { const ch = document.getElementById('channel').value;
+  const rows = all.filter(r => ch === 'All channels' || r[1] === ch || (leak && r[1] === 'Gate-2'));
+  document.getElementById('rows').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td class="ch">${r[1]}</td><td>${r[2]}</td></tr>`).join(''); };
+</script></body></html>

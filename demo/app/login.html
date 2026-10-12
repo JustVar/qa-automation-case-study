@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Demo Video Portal - Sign in</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="card"><h2>Demo Video Portal</h2>
+<form id="f"><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label>
+<button id="signin" type="submit">Sign in</button><p id="msg" class="err"></p></form></div>
+<script>
+document.getElementById('f').onsubmit = e => { e.preventDefault();
+  const ok = document.getElementById('email').value === 'qa@example.com' && document.getElementById('password').value === 'demo-pass';
+  if (ok) location.href = 'live.html' + location.search; else document.getElementById('msg').textContent = 'Invalid email or password.'; };
+</script></body></html>

@@ -1,0 +1,15 @@
+body{margin:0;font-family:Segoe UI,Helvetica,Arial,sans-serif;background:#f4f5f7;color:#1f2328}
+header{background:#1f2a44;color:#fff;padding:14px 24px;display:flex;gap:28px;align-items:center}
+header b{font-size:18px;margin-right:24px} header a{color:#c9d4ff;text-decoration:none}
+main{padding:24px}
+.card{background:#fff;border-radius:8px;padding:28px;max-width:360px;margin:80px auto;box-shadow:0 2px 8px #0001}
+input,button,select{font-size:15px;padding:9px;margin:6px 0;width:100%;box-sizing:border-box}
+button{background:#2f6feb;color:#fff;border:0;border-radius:6px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:980px}
+.tile{background:#11161d;border-radius:8px;aspect-ratio:16/9;position:relative;color:#9aa4b2;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.tile video{position:absolute;inset:0;width:100%;height:100%}
+.tile .name{position:absolute;left:10px;top:8px;color:#fff;font-size:13px}
+.spin{width:28px;height:28px;border:3px solid #39424e;border-top-color:#8ab4ff;border-radius:50%;animation:s 1s linear infinite;margin-bottom:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+table{border-collapse:collapse;background:#fff;width:100%;max-width:980px} td,th{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
+.err{color:#b42318}
