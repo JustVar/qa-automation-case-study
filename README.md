@@ -66,7 +66,7 @@ The [Terms](#terms) section at the end explains the words the repos use.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="diagram/architecture-dark.svg">
-  <img src="diagram/architecture-light.svg" width="900" alt="A Windows runner and, earlier, a Linux nightly ran the browser suite, and a person can start either suite by hand. Both suites run through the shared pytest pipeline, which produces the run archive, email reports, the QA Touch upload and run records. The nightly, the Slack summary and the Jira bug filer are drawn dashed: they are kept on the archive branch.">
+  <img src="diagram/architecture-light.svg" width="900" alt="A Linux nightly and a Windows runner run the browser suite, and a person can start either suite by hand. Both suites run through the shared pytest pipeline, which produces the run archive, Slack and email reports, the QA Touch upload, a Jira bug filer and run records.">
 </picture>
 
 ### What happens in one run

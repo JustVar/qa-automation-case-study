@@ -27,10 +27,8 @@ FILL = {
 }
 
 THEMES = {
-    "light": {"group": "#f6f8fa", "group_stroke": "#d0d7de", "label": "#57606a", "line": "#6e7781",
-              "text_muted": "#24292f"},
-    "dark": {"group": "#161b22", "group_stroke": "#30363d", "label": "#8b949e", "line": "#8b949e",
-             "text_muted": "#e6edf3"},
+    "light": {"group": "#f6f8fa", "group_stroke": "#d0d7de", "label": "#57606a", "line": "#6e7781"},
+    "dark": {"group": "#161b22", "group_stroke": "#30363d", "label": "#8b949e", "line": "#8b949e"},
 }
 
 
@@ -52,22 +50,14 @@ def lines_of_text(cx, cy, lines, bold_first=True, color="#ffffff"):
     return "".join(out)
 
 
-def _shape(x, y, w, h, rx, role, lines, archived, t):
-    """A filled box, or for a part kept on the archive branch, a dashed outline."""
-    if archived:
-        return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="none" '
-                f'stroke="{FILL[role]}" stroke-width="2" stroke-dasharray="6 4"/>'
-                + lines_of_text(x + w / 2, y + h / 2, lines, color=t["text_muted"]))
-    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{FILL[role]}"/>'
+def box(x, y, w, h, role, lines):
+    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="{FILL[role]}"/>'
             + lines_of_text(x + w / 2, y + h / 2, lines))
 
 
-def box(x, y, w, h, role, lines, archived=False, t=None):
-    return _shape(x, y, w, h, 8, role, lines, archived, t)
-
-
-def pill(x, y, w, h, role, lines, archived=False, t=None):
-    return _shape(x, y, w, h, h / 2, role, lines, archived, t)
+def pill(x, y, w, h, role, lines):
+    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{h / 2}" fill="{FILL[role]}"/>'
+            + lines_of_text(x + w / 2, y + h / 2, lines))
 
 
 def hexagon(cx, y, w, h, role, lines):
@@ -100,7 +90,7 @@ def build(theme: str) -> str:
 
     # Scheduled runs feed the browser suite only; a person can start either suite.
     parts.append(group(20, 20, 450, 114, "Scheduled runs", t))
-    parts.append(pill(40, 54, 200, 60, "schedule", ["Nightly", "Linux lab server"], archived=True, t=t))
+    parts.append(pill(40, 54, 200, 60, "schedule", ["Nightly", "Linux lab server"]))
     parts.append(pill(250, 54, 200, 60, "schedule", ["Windows runner", "H.265 live video"]))
     parts.append(group(490, 20, 390, 114, "Started by hand", t))
     parts.append(pill(585, 54, 200, 60, "schedule", ["pytest, by hand", "Any suite, any test"]))
@@ -120,12 +110,11 @@ def build(theme: str) -> str:
     parts.append(group(610, gy, gw, gh, "Records", t))
 
     parts.append(box(40, gy + 38, 230, 60, "output", ["Run archive", "Run page, health page"]))
-    parts.append(box(40, gy + 128, 110, 62, "notify", ["Slack", "Daily summary"], archived=True, t=t))
+    parts.append(box(40, gy + 128, 110, 62, "notify", ["Slack", "Daily summary"]))
     parts.append(box(160, gy + 128, 110, 62, "notify", ["Email", "Microsoft 365"]))
 
     parts.append(box(335, gy + 38, 230, 60, "output", ["QA Touch", "Results read back and checked"]))
-    parts.append(box(335, gy + 128, 230, 76, "output", ["Jira bug filer", "Scored on failure history,", "approved by QA, then filed"],
-                     archived=True, t=t))
+    parts.append(box(335, gy + 128, 230, 76, "output", ["Jira bug filer", "Scored on failure history,", "approved by QA, then filed"]))
 
     parts.append(cylinder(650, gy + 34, 190, 70, "output", ["Run record", "Every run"]))
     parts.append(cylinder(650, gy + 124, 190, 70, "output", ["Run ledger", "Armed runs only"]))
@@ -147,23 +136,16 @@ def build(theme: str) -> str:
     parts.append(path([(155, gy + 98), (155, gy + 112), (95, gy + 112), (95, gy + 126)], t))
     parts.append(path([(155, gy + 112), (215, gy + 112), (215, gy + 126)], t))
 
-    # Legend for the dashed outlines.
-    ly = gy + gh + 22
-    parts.append(f'<rect x="20" y="{ly - 12}" width="34" height="16" rx="4" fill="none" '
-                 f'stroke="{t["line"]}" stroke-width="2" stroke-dasharray="6 4"/>')
-    parts.append(f'<text x="64" y="{ly + 1}" font-size="13" fill="{t["label"]}">Dashed outline: built and '
-                 f'used, now kept on the archive/pre-pivot branch</text>')
-
-    height = ly + 18
+    height = gy + gh + 20
     defs = (f'<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
             f'markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" '
             f'fill="{t["line"]}"/></marker></defs>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{height}" '
             f'viewBox="0 0 {WIDTH} {height}" font-family="{FONT}" role="img" '
-            f'aria-label="A Windows runner and, earlier, a Linux nightly ran the browser suite; a '
-            f'person can start either suite. Both run through the shared pytest pipeline, which '
-            f'produces the run archive, email reports, the QA Touch upload and run records. The '
-            f'nightly, the Slack post and the Jira bug filer are kept on the archive branch.">'
+            f'aria-label="A Linux nightly and a Windows runner run the browser suite, and a person '
+            f'can start either suite by hand. Both run through the shared pytest pipeline, which '
+            f'produces the run archive, Slack and email reports, the QA Touch upload, a Jira bug '
+            f'filer and run records.">'
             f'{defs}{"".join(parts)}</svg>\n')
 
 
