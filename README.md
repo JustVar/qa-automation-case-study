@@ -4,9 +4,9 @@ Justin Varughese, System Platform QA/QC Manager.
 [LinkedIn](https://www.linkedin.com/in/justin-var/)
 
 I built this test automation framework for NexaiQ-Core, the cloud web app of
-Soterix Systems, while I was its System Platform QA/QC Manager. Soterix sold
-AI video analytics as a service. The company has since closed, so the code is
-published here for review, and only the offline tests can still run.
+Soterix Systems, while I was its System Platform QA/QC Manager. Soterix was an
+AI video analytics (VSaaS) startup. The company has since closed, so the code
+is published here for review, and only the offline tests can still run.
 
 > **About the data in these repos.** They hold no passwords, keys, customer
 > data or exported test cases. Server addresses, logins, account and site
@@ -33,7 +33,7 @@ output had to prove itself.
 | Hardware tests | 33 tests of the cameras' own web pages and firmware, run on each enabled camera in the lab registry (10 of 34 entries), kept on the archive branch |
 | Tests of the tooling itself | 645 in the browser repo, 47 in the API repo, 850 in the shared package, all offline. The pipeline writes to the team's system of record, so it is tested like product code |
 | Integrations | QA Touch (test management), Jira (defects), Slack and Microsoft 365 email (reports) |
-| Scale | Over 900 commits across three repos, 31 tagged releases of the shared package |
+| Scale | Three repos; 31 tagged releases of the shared package, which both test suites install as a pinned wheel |
 | Stack | Python, pytest, Playwright UI and end-to-end automation with the Page Object Model, REST API testing (requests), CI with GitHub Actions, QA Touch, Jira, Slack, Microsoft 365, AI coding agents (Claude Code, OpenAI Codex, Microsoft 365 Copilot) for agentic development |
 
 ## Where to start
