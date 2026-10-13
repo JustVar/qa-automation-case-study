@@ -28,7 +28,7 @@ output had to prove itself.
 
 | | |
 |---|---|
-| Browser tests | 402 Playwright tests across 13 product areas, each mapped to its test case in QA Touch |
+| Browser tests | 402 Playwright tests across 14 product areas, each mapped to its test case in QA Touch |
 | API tests | 52 functional tests of the internal API, 17 partner-API tests (3 key checks and a 14-endpoint sweep), and a sweep of 101 read-only internal endpoints: 67 called on every run, 34 skipped with the measured reason |
 | Hardware tests | 33 tests of the cameras' own web pages and firmware, run on each enabled camera in the lab registry (10 of 34 entries), kept on the archive branch |
 | Tests of the tooling itself | 645 in the browser repo, 47 in the API repo, 850 in the shared package, all offline. The pipeline writes to the team's system of record, so it is tested like product code |
@@ -160,8 +160,7 @@ to run them and make these images again.
 7. **Credentials kept out of evidence.** Every password is wrapped in a type
    that shows as `***` in tracebacks and test reports, and a scan tool
    checks a run's evidence for leaked values, including encoded and escaped
-   copies, and redacts them. Both were added after a failed login wrote a
-   password into a test log that was shared with the team.
+   copies, and redacts them.
    [secret.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/config/secret.py),
    [evidence_scan.py](https://github.com/JustVar/Soterix-WebApp-QA/blob/main/tools/evidence_scan.py)
 8. **API failures that explain themselves.** A failed login says whether the
