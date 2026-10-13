@@ -253,8 +253,8 @@ the ARCHIVE.md in each test repo lists what is there.
 | Term | Meaning |
 |---|---|
 | Tenant | One customer account on the QA server. The nightly tested two. |
-| Internal API | The API the web app itself calls (`/v-apiserver`), signed in with a session cookie. |
-| Partner API | The API the product offers to third-party systems (`/v-integration-api`), with a static key in each request. |
+| Internal API | The API the web app itself calls, signed in with a session cookie. |
+| Partner API | The API the product offers to partner systems, with a static key in each request. |
 | Preflight | The sign-in check a browser run makes through the API before any browser opens. |
 | Stream guard | The check that this browser can play the server's live video before the live-video tests run. |
 | H.265 | The video format the cameras streamed. Chrome on Linux cannot decode it; Chrome on Windows can. |
